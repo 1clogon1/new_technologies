@@ -28,5 +28,10 @@ class AppTopController extends Controller
         $date = $request->query('date');
         return $this->appTopService->getTopByDate($date);
     }
+
+    public function addTopCategory()
+    {
+        return $this->appTopService->saveInfoBD();
+    }
 }
 
