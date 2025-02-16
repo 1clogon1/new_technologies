@@ -18,7 +18,7 @@
 6. Добавляем данные для базы PostgreSQL и Redis:
 	DB_CONNECTION=pgsql
 	DB_HOST=db
-	DB_PORT=5432
+	DB_PORT=5433
 	DB_DATABASE=new_technologies
 	DB_USERNAME=user
 	DB_PASSWORD=password
