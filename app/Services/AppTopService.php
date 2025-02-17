@@ -13,27 +13,19 @@ class AppTopService
     public function getTopByDate(string $date)
     {
         try {
-            $cacheKey = "app_top:{$date}";
+            $data = AppTop::where('date', $date)
+                ->orderBy('position', 'asc')
+                ->get(['category', 'position']);
 
-            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
-                return response()->json(['error' => 'Invalid date format'], 400);
+            if ($data->isEmpty()) {
+                return response()->json(['error' => 'No data found for this date'], 404);
             }
 
-            return Cache::remember($cacheKey, now()->addMinutes(60), function () use ($date) {
-                $data = AppTop::where('date', $date)
-                    ->orderBy('position', 'asc')
-                    ->get(['category', 'position']);
-
-                if ($data->isEmpty()) {
-                    return response()->json(['error' => 'No data found for this date'], 404);
-                }
-
-                return response()->json([
-                    'status_code' => 200,
-                    'message' => 'ok',
-                    'data' => $data->pluck('position', 'category'),
-                ]);
-            });
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'ok',
+                'data' => $data->pluck('position', 'category'),
+            ]);
         } catch (\Throwable $e) {
             Log::error("Error fetching top categories", ['error' => $e->getMessage()]);
             return response()->json(['error' => 'Internal server error'], 500);
