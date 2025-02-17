@@ -26,7 +26,10 @@ class AppTopController extends Controller
         }
 
         $date = $request->query('date');
-        return $this->appTopService->getTopByDate($date);
+    
+        return Cache::remember("app_top:{$date}", now()->addMinutes(60), function () use ($date) {
+            return $this->appTopService->getTopByDate($date);
+        });
     }
 
     public function addTopCategory()
